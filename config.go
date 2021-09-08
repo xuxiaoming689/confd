@@ -30,6 +30,7 @@ type Config struct {
 	SRVRecord     string `toml:"srv_record"`
 	LogLevel      string `toml:"log-level"`
 	Watch         bool   `toml:"watch"`
+	WatchInterval int    `toml:"watch_interval"`
 	PrintVersion  bool
 	ConfigFile    string
 	OneTime       bool
@@ -73,6 +74,7 @@ func init() {
 	flag.StringVar(&config.Username, "username", "", "the username to authenticate as (only used with vault and etcd backends)")
 	flag.StringVar(&config.Password, "password", "", "the password to authenticate with (only used with vault and etcd backends)")
 	flag.BoolVar(&config.Watch, "watch", false, "enable watch support")
+	flag.IntVar(&config.WatchInterval, "watch-interval", 1, "watch backend polling interval")
 }
 
 // initConfig initializes the confd configuration by first setting defaults,

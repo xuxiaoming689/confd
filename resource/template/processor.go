@@ -63,16 +63,17 @@ func (p *intervalProcessor) Process() {
 }
 
 type watchProcessor struct {
-	config   Config
-	stopChan chan bool
-	doneChan chan bool
-	errChan  chan error
-	wg       sync.WaitGroup
+	config        Config
+	stopChan      chan bool
+	doneChan      chan bool
+	errChan       chan error
+	watchInterval int
+	wg            sync.WaitGroup
 }
 
-func WatchProcessor(config Config, stopChan, doneChan chan bool, errChan chan error) Processor {
+func WatchProcessor(config Config, stopChan, doneChan chan bool, errChan chan error, watchInterval int) Processor {
 	var wg sync.WaitGroup
-	return &watchProcessor{config, stopChan, doneChan, errChan, wg}
+	return &watchProcessor{config, stopChan, doneChan, errChan, watchInterval, wg}
 }
 
 func (p *watchProcessor) Process() {
@@ -102,6 +103,8 @@ func (p *watchProcessor) monitorPrefix(t *TemplateResource) {
 			continue
 		}
 		t.lastIndex = index
+		// add interval for watch
+		time.Sleep(time.Duration(p.watchInterval) * time.Second)
 		if err := t.process(); err != nil {
 			p.errChan <- err
 		}
